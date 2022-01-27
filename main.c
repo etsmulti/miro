@@ -17,6 +17,8 @@ int main(void)
 	char str[9][20];
 	char m[9][10];
 
+	// miro.txt  ют╥б
+
 	fp = fopen("miro.txt", "r");
 
 	if (fp == NULL)
