@@ -4,7 +4,7 @@
 int x = 0, y = 0;
 int xx = 8, yy = 8;
 int di = 1;
-int dd = 0;
+int dd = 0, df = 0;
 // 1 진행방향이 북쪽
 // 2 진행방향이 서쪽
 // 3 진행방향이 동쪽
@@ -77,223 +77,124 @@ int main(void)
 
 	while (1)
 	{
-		printf("이동위치를 입력하세요 ( 직진: 1  왼쪽: 2  오른쪽: 3  후진: 4  종료: 5 ) ==>  \n");
+		printf("이동위치를 입력하세요 ( 직진: 0 오른쪽: 1 후진: 2  왼쪽:3  종료: 5 ) ==>  \n");
 		scanf("%d", &dr);
 		system("cls");
 		printf("키입력전 현재의 위치는 x = %d, y = %d 이고 현위치의 값은 %c \n", x, y, m[x][y]);
 		if (dr == 5) break;
-
-		/************************************/
-		if (dd)
-		{
-			switch (di)
-			{
-			case 1:
-				printf("이전 직진중입니다 \n");
-				switch (dr)
-				{
-				case 1:
-					printf("진행방향에서 전진 \n");
-					break;
-				case 2:
-					printf("진행방향에서 좌회전 \n");
-					break;
-				case 3:
-					printf("진행방향에서 우회전 \n");
-					break;
-				case 4:
-					printf("진행방향에서 후진 \n");
-					break;
-				default:
-					break;
-				}
-				break;
-
-			case 2:
-				printf("이전 좌회전 중입니다 \n");
-				switch (dr)
-				{
-				case 1:
-					printf("진행방향에서 전진 \n");
-					dr = 2;
-					break;
-				case 2:
-					printf("진행방향에서 좌회전 \n");
-					dr = 4;
-					break;
-				case 3:
-					printf("진행방향에서 우회전 \n");
-					dr = 1;
-					break;
-				case 4:
-					printf("진행방향에서 후진 \n");
-					dr = 3;
-					break;
-				default:
-					break;
-				}
-				break;
-			case 3:
-				printf("이전 우회전 중입니다 \n");
-				switch (dr)
-				{
-				case 1:
-					printf("진행방향에서 전진 \n");
-					dr = 3;
-					break;
-				case 2:
-					printf("진행방향에서 좌회전 \n");
-					dr = 1;
-					break;
-				case 3:
-					printf("진행방향에서 우회전 \n");
-					dr = 4;
-					break;
-				case 4:
-					printf("진행방향에서 후진 \n");
-					dr = 2;
-					break;
-				default:
-					break;
-				}
-				break;
-			case 4:
-				printf("이전 뒤로 이동중입니다 \n");
-				switch (dr)
-				{
-				case 1:
-					printf("진행방향에서 전진 \n");
-					dr = 4;
-					break;
-				case 2:
-					printf("진행방향에서 좌회전 \n");
-					dr = 3;
-					break;
-				case 3:
-					printf("진행방향에서 우회전 \n");
-					dr = 2;
-					break;
-				case 4:
-					printf("진행방향에서 후진 \n");
-					dr = 1;
-					break;
-				default:
-					break;
-				}
-				break;
-			default:
-				printf("1~ 4 번위에서 눌러주세요 \n");
-				break;
-			}
-			di = dr;
-		}
-
+		
+		if (dd) dr = (df + dr) % 4;
+		//위치 결정
 
 		switch (dr)
 		{
 			char mm;
-		case 1:
+			case 0:
 
-			if (y == yy) {
-				printf("최상단입니다 올라갈곳이 없습니다\n"); break;
-			}
-			printf("고정 위쪽 \n");
-			mm = m[y + 1][x];
-			switch (mm)
-			{
-			case 'o':
-				y++;
+				if (y == yy) {
+					printf("최상단입니다 올라갈곳이 없습니다\n"); break;
+				}
+				printf("고정 위쪽 \n");
+				mm = m[y + 1][x];
+				switch (mm)
+				{
+					case 'o':
+						y++;
+						break;
+					case 'x':
+						printf("************ 막혀서 움직일수 없습니다. ************\n");
+						break;
+					case 'S':
+						y++;
+						printf("출발점에 위치 하였습니다 \n");
+						break;
+					case 'F':
+						printf("결승점에 꼴인 하였습니다 \n");
+						return 0;
+					default:
+						break;
+				}
 				break;
-			case 'x':
-				printf("************ 막혀서 움직일수 없습니다. ************\n");
+			
+			case 1:
+				printf("고정 오른쪽 \n");
+				if (x == xx) { printf("현재 위치가 가장 오른쪽에 있습니다. \n");  break; }
+
+				mm = m[y][x + 1];
+				switch (mm)
+				{
+					case 'o':
+						x++;
+						break;
+					case 'x':
+						printf("************ 막혀서 움직일수 없습니다. ************\n");
+						break;
+					case 'S':
+						x++;
+						printf("출발점에 위치 하였습니다 \n");
+						break;
+					case 'F':
+						printf("결승점에 꼴인 하였습니다 \n");
+						return 0;
+					default:
+						break;
+				}
 				break;
-			case 'S':
-				y++;
-				printf("출발점에 위치 하였습니다 \n");
+
+
+			case 2:
+				printf("고정 후진 \n");
+				if (y == 0) { printf("현재 위치가 가장 바닥에 있습니다. \n");  break; }
+
+				mm = m[y - 1][x];
+				switch (mm)
+				{
+					case 'o':
+						y--;
+						break;
+					case 'x':
+						printf("************ 막혀서 움직일수 없습니다. ************\n");
+						break;
+					case 'S':
+						y--;
+						printf("출발점에 위치 하였습니다 \n");
+						break;
+					case 'F':
+						printf("결승점에 꼴인 하였습니다 \n");
+						return 0;
+					default:
+						break;
+				}
+
+			case 3:
+				printf("고정 왼쪽 \n");
+				if (x == 0) { printf("현재 위치가 가장 왼쪽에 있습니다. \n");  break; }
+				mm = m[y][x - 1];
+
+				switch (mm)
+				{
+					case 'o':
+						x--;
+						break;
+					case 'x':
+						printf("************ 막혀서 움직일수 없습니다. ************\n");
+						break;
+					case 'S':
+						x--;
+						printf("출발점에 위치 하였습니다 \n");
+						break;
+					case 'F':
+						printf("결승점에 꼴인 하였습니다 \n");
+						return 0;
+					default:
+						break;
+				}
 				break;
-			case 'F':
-				printf("결승점에 꼴인 하였습니다 \n");
-				return 0;
+
 			default:
 				break;
 			}
-			break;
-		case 2:
-			printf("고정 왼쪽 \n");
-			if (x == 0) { printf("현재 위치가 가장 왼쪽에 있습니다. \n");  break; }
-			mm = m[y][x - 1];
-
-			switch (mm)
-			{
-			case 'o':
-				x--;
-				break;
-			case 'x':
-				printf("************ 막혀서 움직일수 없습니다. ************\n");
-				break;
-			case 'S':
-				x--;
-				printf("출발점에 위치 하였습니다 \n");
-				break;
-			case 'F':
-				printf("결승점에 꼴인 하였습니다 \n");
-				return 0;
-			default:
-				break;
-			}
-			break;
-		case 3:
-			printf("고정 오른쪽 \n");
-			if (x == xx) { printf("현재 위치가 가장 오른쪽에 있습니다. \n");  break; }
-
-			mm = m[y][x + 1];
-			switch (mm)
-			{
-			case 'o':
-				x++;
-				break;
-			case 'x':
-				printf("************ 막혀서 움직일수 없습니다. ************\n");
-				break;
-			case 'S':
-				x++;
-				printf("출발점에 위치 하였습니다 \n");
-				break;
-			case 'F':
-				printf("결승점에 꼴인 하였습니다 \n");
-				return 0;
-			default:
-				break;
-			}
-			break;
-
-
-		case 4:
-			printf("고정 후진 \n");
-			if (y == 0) { printf("현재 위치가 가장 바닥에 있습니다. \n");  break; }
-
-			mm = m[y - 1][x];
-			switch (mm)
-			{
-			case 'o':
-				y--;
-				break;
-			case 'x':
-				printf("************ 막혀서 움직일수 없습니다. ************\n");
-				break;
-			case 'S':
-				y--;
-				printf("출발점에 위치 하였습니다 \n");
-				break;
-			case 'F':
-				printf("결승점에 꼴인 하였습니다 \n");
-				return 0;
-			default:
-				break;
-			}
-		default:
-			break;
-		}
+		df = dr;
 		printf("키입력후 현재의 위치는 x = %d, y = %d 이고 현위치의 값은 %c \n", x, y, m[x][y]);
 	}
 
